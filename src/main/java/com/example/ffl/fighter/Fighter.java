@@ -70,4 +70,12 @@ public class Fighter {
         this.nationality = nationality;
     }
 
+    //Constructors
+    public Fighter(String name)
+    {
+        this.name = name;
+    }
+    public Fighter() {}
+
+
 }
