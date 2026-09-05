@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FFL Fighters</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            font-size: 2.5em;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 20px;
+        }
+
+        .search-box {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        .search-box input {
+            padding: 10px;
+            width: 60%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .search-box button {
+            padding: 10px 20px;
+            background: #666;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+
+        .search-box button:hover {
+            background: #444;
+        }
+
+        .search-box button.show-all {
+            background: #888;
+        }
+
+        .search-box button.show-all:hover {
+            background: #666;
+        }
+
+        .fighters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .fighter-card {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .fighter-card:hover {
+            border-color: #999;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .fighter-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .fighter-nickname {
+            color: #666;
+            font-style: italic;
+            margin: 5px 0;
+        }
+
+        .fighter-details {
+            color: #555;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+
+        .fighter-details div {
+            margin: 3px 0;
+        }
+
+        .record {
+            background: #f0f0f0;
+            padding: 8px;
+            border-radius: 5px;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .wins {
+            color: #2e7d32;
+            font-weight: bold;
+        }
+        .losses {
+            color: #c62828;
+            font-weight: bold;
+        }
+
+        .loading {
+            text-align: center;
+            color: #666;
+            font-size: 18px;
+        }
+
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            display: none;
+            text-align: center;
+        }
+
+        .success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #a5d6a7;
+        }
+
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef9a9a;
+        }
+
+        .info {
+            background: #e3f2fd;
+            color: #0d47a1;
+            border: 1px solid #90caf9;
+        }
+    </style>
+</head>
+<body>
+
+<h1>FFL Fighters</h1>
+
+<!-- Message display -->
+<div id="message" class="message"></div>
+
+<!-- Search Section -->
+<div class="search-box">
+    <input type="text" id="searchInput" placeholder="Search by name...">
+    <button onclick="searchFighters()">Search</button>
+    <button onclick="loadAllFighters()" class="show-all">Show All</button>
+</div>
+
+<!-- Fighter Grid -->
+<div id="fightersContainer" class="fighters-grid"></div>
+
+<script>
+    const API_URL = '/api/fighter';
+
+    // Load fighters when page loads
+    window.onload = loadAllFighters;
+
+    // Show message
+    function showMessage(text, type) {
+        const msg = document.getElementById('message');
+        msg.textContent = text;
+        msg.className = 'message ' + type;
+        msg.style.display = 'block';
+        setTimeout(() => { msg.style.display = 'none'; }, 3000);
+    }
+
+    // Load all fighters
+    async function loadAllFighters() {
+        document.getElementById('fightersContainer').innerHTML = '<p class="loading">Loading fighters...</p>';
+
+        try {
+            const response = await fetch(API_URL + '/all');
+            const fighters = await response.json();
+            displayFighters(fighters);
+        } catch (error) {
+            document.getElementById('fightersContainer').innerHTML =
+                '<p class="loading">Error loading fighters</p>';
+            showMessage('Error loading fighters', 'error');
+        }
+    }
+
+    // Search fighters
+    async function searchFighters() {
+        const searchTerm = document.getElementById('searchInput').value.trim();
+
+        if (!searchTerm) {
+            loadAllFighters();
+            return;
+        }
+
+        document.getElementById('fightersContainer').innerHTML = '<p class="loading">Searching...</p>';
+
+        try {
+            const response = await fetch(API_URL + '?name=' + encodeURIComponent(searchTerm));
+            const fighters = await response.json();
+            displayFighters(fighters);
+            if (fighters.length === 0) {
+                showMessage('No fighters found matching "' + searchTerm + '"', 'info');
+            }
+        } catch (error) {
+            showMessage('Error searching fighters', 'error');
+        }
+    }
+
+    // Display fighters
+    function displayFighters(fighters) {
+        const container = document.getElementById('fightersContainer');
+
+        if (!fighters || fighters.length === 0) {
+            container.innerHTML = '<p class="loading">No fighters found.</p>';
+            return;
+        }
+
+        let html = '';
+        fighters.forEach(f => {
+            html += `
+                    <div class="fighter-card">
+                        <div class="fighter-name">${f.name}</div>
+                        <div class="fighter-nickname">"${f.nickName || 'N/A'}"</div>
+                        <div class="fighter-details">
+                            <div>Country: ${f.country || 'N/A'}</div>
+                            <div>Age: ${f.age || 'N/A'} years old</div>
+                            <div>Stance: ${f.stance || 'N/A'}</div>
+                            <div>Weight Class: ${f.weightClass || 'N/A'}</div>
+                            <div>Height: ${f.height || 'N/A'} cm</div>
+                            <div>Reach: ${f.reach || 'N/A'} cm</div>
+                        </div>
+                        <div class="record">
+                            <span class="wins">${f.wins || 0}W</span>
+                            <span class="losses"> ${f.losses || 0}L</span>
+                            <span style="color: #888;"> | ${f.totalFights || 0} fights</span>
+                        </div>
+                    </div>
+                `;
+        });
+
+        container.innerHTML = html;
+    }
+
+    // Press Enter key to search
+    document.getElementById('searchInput').addEventListener('keyup', function(e) {
+        if (e.key === 'Enter') {
+            searchFighters();
+        }
+    });
+</script>
+
+</body>
+</html>

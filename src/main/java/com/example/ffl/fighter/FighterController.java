@@ -3,7 +3,6 @@ package com.example.ffl.fighter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,18 +25,18 @@ public class FighterController {
 
     @PostMapping(path="/add") // Map ONLY POST Requests
     public @ResponseBody String addNewUser (@RequestParam String name
-            , @RequestParam String martialArt, @RequestParam String weightClass, @RequestParam Integer height, @RequestParam String nationality) {
+            , @RequestParam String martialArt, @RequestParam String weightClass, @RequestParam Integer height, @RequestParam String country) {
         // @ResponseBody means the returned String is the response, not a view name
         // @RequestParam means it is a parameter from the GET or POST request
 
         Fighter n = new Fighter();
         n.setName(name);
-        n.setMartialArt(martialArt);
+        n.setStance(martialArt);
         n.setHeight(height);
         n.setWeightClass(weightClass);
-        n.setNationality(nationality);
+        n.setCountry(country);
 
-        fighterRepository.save(n);
+
         fighterRepository.saveAndFlush(n);
         return "Saved";
     }

@@ -3,72 +3,74 @@ package com.example.ffl.fighter;
 import org.jspecify.annotations.Nullable;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity // This tells Hibernate to make a table out of this class
 public class Fighter {
-    @Id
+    /*
     @GeneratedValue(strategy=GenerationType.AUTO)
     private @Nullable Integer id;
-
+    */
+    @Id
     private String name;
 
-    private String nationality;
+    @Nullable
+    private String nickName;
 
-    private String martialArt;
+    private Integer age;
+
+    private String country;
+
+    private String stance;
 
     private String weightClass;
 
     private Integer height;
 
-    public String getWeightClass() {
-        return weightClass;
-    }
+    private Integer wins;
 
-    public void setWeightClass(String weightClass) {
-        this.weightClass = weightClass;
-    }
+    private Integer losses;
 
-    public Integer getHeight() {
-        return height;
-    }
+    private Integer totalFights;
 
-    public void setHeight(Integer height) {
-        this.height = height;
-    }
+    private Integer reach;
 
-    public String getMartialArt() {
-        return martialArt;
-    }
+    public String getWeightClass() {return weightClass;}
+    public void setWeightClass(String weightClass) {this.weightClass = weightClass;}
 
-    public void setMartialArt(String martialArt) {
-        this.martialArt = martialArt;
-    }
-    public Integer getId() {
-        return id;
-    }
+    public Integer getHeight() {return height;}
+    public void setHeight(Integer height) {this.height = height;}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    public String getStance() {return stance;}
+    public void setStance(String martialArt) {this.stance = martialArt;}
 
-    public String getName() {
-        return name;
-    }
+    /*
+    public Integer getId() {return id;}
+    public void setId(Integer id) {this.id = id;}
+    */
+    public String getName() {return name;}
+    public void setName(String name) {this.name = name;}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public String getCountry() {return country;}
+    public void setCountry(String nationality) {this.country = nationality;}
 
-    public String getNationality() {
-        return nationality;
-    }
+    public String getNickName() {return nickName;}
+    public void setNickName(String nickName) {this.nickName = nickName;}
 
-    public void setNationality(String nationality) {
-        this.nationality = nationality;
-    }
+    public Integer getAge() {return age;}
+    public void setAge(Integer age) {this.age = age;}
+
+    public Integer getWins() {return wins;}
+    public void setWins(Integer wins) {this.wins = wins;}
+
+    public Integer getLosses() {return losses;}
+    public void setLosses(Integer losses) {this.losses = losses;}
+
+    public Integer getTotalFights() {return totalFights;}
+    public void setTotalFights(Integer totalFights) {this.totalFights = totalFights;}
+
+    public Integer getReach() {return reach;}
+    public void setReach(Integer reach) {this.reach = reach;}
 
     //Constructors
     public Fighter(String name)

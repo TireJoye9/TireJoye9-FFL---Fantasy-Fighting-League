@@ -25,7 +25,7 @@ public class FighterService {
 
     public List<Fighter> getPlayerByNationality(String searchText) {
         return fighterRepository.findAll().stream()
-                .filter(f -> f.getNationality().equals(searchText))
+                .filter(f -> f.getCountry().equals(searchText))
                 .collect(Collectors.toList());
     }
 
@@ -44,7 +44,7 @@ public class FighterService {
     //Might change to just Repository method for searching
     public List<Fighter> getFightersByMartialArt(String searchText) {
         return fighterRepository.findAll().stream()
-                .filter(f-> f.getMartialArt().toLowerCase().contains(searchText.toLowerCase()))
+                .filter(f-> f.getStance().toLowerCase().contains(searchText.toLowerCase()))
                 .collect(Collectors.toList());
     }
     //Gonna leave height as I might change it to inches.
@@ -53,6 +53,9 @@ public class FighterService {
                 .filter(f ->f.getHeight().equals(searchText))
                 .collect(Collectors.toList());
     }
+
+    //need to add remaining ones for new attributes
+    //--------------------------------------------------------------------------------------------------------------------------
 
     public Fighter addFighter(Fighter fighter) {
         fighterRepository.save(fighter);
@@ -66,9 +69,9 @@ public class FighterService {
             Fighter fighterToUpdate = existingFighter.get();
             fighterToUpdate.setName(updatedFighter.getName());
             fighterToUpdate.setWeightClass(updatedFighter.getWeightClass());
-            fighterToUpdate.setMartialArt(updatedFighter.getMartialArt());
+            fighterToUpdate.setStance(updatedFighter.getStance());
             fighterToUpdate.setHeight(updatedFighter.getHeight());
-            fighterToUpdate.setNationality(updatedFighter.getNationality());
+            fighterToUpdate.setCountry(updatedFighter.getCountry());
 
             fighterRepository.save(fighterToUpdate);
             return fighterToUpdate;
